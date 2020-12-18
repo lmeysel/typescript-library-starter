@@ -30,6 +30,7 @@
     "commit": "git-cz",
     "semantic-release": "semantic-release",
     "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
+    "postinstall": "ts-node tools/init",
     "precommit": "lint-staged"
   },
   "lint-staged": {
