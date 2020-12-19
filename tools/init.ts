@@ -44,7 +44,6 @@ console.log(colors.cyan("Hi! You're almost ready to make the next great TypeScri
 
 // Generate the library name and start the tasks
 if (process.env.CI == null) {
-  // tslint:disable-next-line: no-floating-promises
   libraryNameCreate();
 } else {
   // This is being run in a CI environment, so don't ask any questions
