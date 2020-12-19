@@ -36,7 +36,6 @@ process.stdout.write('\x1B[2J\x1B[0f')
 
 if (!which('git')) {
   console.log(colors.red('Sorry, this script requires git'))
-  removeItems()
   process.exit(1)
 }
 
@@ -45,7 +44,8 @@ console.log(colors.cyan("Hi! You're almost ready to make the next great TypeScri
 
 // Generate the library name and start the tasks
 if (process.env.CI == null) {
-  await libraryNameCreate();
+  // tslint:disable-next-line: no-floating-promises
+  libraryNameCreate();
 } else {
   // This is being run in a CI environment, so don't ask any questions
   setupLibrary('test-library-name')
@@ -57,11 +57,10 @@ if (process.env.CI == null) {
  */
 async function libraryNameCreate() {
   try {
-    const res: { library: string } = await _promptSchemaLibraryName
+    const res: { library: string } = await _promptSchemaLibraryName;
     setupLibrary(res.library)
   } catch (error) {
     console.log(colors.red('Sorry, there was an error building the workspace :('))
-    removeItems()
     process.exit(1)
   }
 }
