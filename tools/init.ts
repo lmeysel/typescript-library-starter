@@ -3,7 +3,7 @@
  */
 import { prompt } from 'enquirer'
 import { mv, rm, which, exec } from 'shelljs'
-import replace from 'replace-in-file'
+import * as replace from 'replace-in-file'
 import * as colors from 'colors'
 import * as path from 'path'
 import { readFileSync, writeFileSync } from 'fs'
