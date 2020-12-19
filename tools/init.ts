@@ -31,13 +31,6 @@ const _promptSchemaLibraryName: Promise<{ library: string }> = prompt({
   validate: (input: any) => /^[a-z]+(\-[a-z]+)*$/.test(input),
 })
 
-const _promptSchemaLibrarySuggest: Promise<{ useSuggestedName: string }> = prompt({
-  type: 'input',
-  name: 'useSuggestedName',
-  message: `Would you like it to be called ${libraryNameSuggested()} ? [Yes/No]`,
-  validate: (input: any) => /^(y(es)?|n(o)?)$/i.test(input),
-})
-
 // Clear console
 process.stdout.write('\x1B[2J\x1B[0f')
 
@@ -52,14 +45,10 @@ console.log(colors.cyan("Hi! You're almost ready to make the next great TypeScri
 
 // Generate the library name and start the tasks
 if (process.env.CI == null) {
-  if (!libraryNameSuggestedIsDefault()) {
-    await libraryNameSuggestedAccept();
-  } else {
-    await libraryNameCreate();
-  }
+  await libraryNameCreate();
 } else {
   // This is being run in a CI environment, so don't ask any questions
-  setupLibrary(libraryNameSuggested())
+  setupLibrary('test-library-name')
 }
 
 /**
@@ -78,24 +67,6 @@ async function libraryNameCreate() {
 }
 
 /**
- * Sees if the users wants to accept the suggested library name if the project
- * has been cloned into a custom directory (i.e. it's not 'typescript-library-starter')
- */
-async function libraryNameSuggestedAccept() {
-  try {
-    const res = await _promptSchemaLibrarySuggest
-    if (res.useSuggestedName.toLowerCase().charAt(0) === 'y') {
-      setupLibrary(libraryNameSuggested())
-    } else {
-      await libraryNameCreate()
-    }
-  } catch (error) {
-    console.log(colors.red("Sorry, you'll need to type the library name"))
-    await libraryNameCreate()
-  }
-}
-
-/**
  * The library name is suggested by looking at the directory name of the
  * tools parent directory and converting it to kebab-case
  *
@@ -110,17 +81,6 @@ function libraryNameSuggested() {
     .replace(/[^\w\d]|_/g, '-')
     .replace(/^-+|-+$/g, '')
     .toLowerCase()
-}
-
-/**
- * Checks if the suggested library name is the default, which is 'typescript-library-starter'
- */
-function libraryNameSuggestedIsDefault() {
-  if (libraryNameSuggested() === 'typescript-library-starter') {
-    return true
-  }
-
-  return false
 }
 
 /**
