@@ -25,12 +25,11 @@ const renameFiles = [
 	['tools/resources/nodejs.yml', '.github/workflows/nodejs.yml'],
 ]
 
-const _promptSchemaLibraryName: Promise<{ library: string }> = prompt({
-  type: 'input',
-  name: 'library',
-  message: 'What do you want the library to be called? (use kebab-case)',
-  validate: (input: any) => /^[a-z]+(\-[a-z]+)*$/.test(input),
-})
+const _suggestLibraryName = function () {
+	const seg = __dirname.split(path.sep);
+	const ret = seg[seg.length - 2];
+	return ret.toLowerCase().replace(/[^a-z0-9]+/gi, '-');
+}
 
 // Clear console
 process.stdout.write('\x1B[2J\x1B[0f')
@@ -57,29 +56,18 @@ if (process.env.CI == null) {
  */
 async function libraryNameCreate() {
   try {
-    const res: { library: string } = await _promptSchemaLibraryName;
+		const res: { library: string } = await prompt({
+			type: 'input',
+			name: 'library',
+			initial: _suggestLibraryName(),
+			message: 'What do you want the library to be called? (use kebab-case)',
+			validate: (input: string) => /^[a-z0-9]+(\-[a-z0-9]+)*$/.test(input),
+		});
     setupLibrary(res.library)
   } catch (error) {
     console.log(colors.red('Sorry, there was an error building the workspace :('))
     process.exit(1)
   }
-}
-
-/**
- * The library name is suggested by looking at the directory name of the
- * tools parent directory and converting it to kebab-case
- *
- * The regex for this looks for any non-word or non-digit character, or
- * an underscore (as it's a word character), and replaces it with a dash.
- * Any leading or trailing dashes are then removed, before the string is
- * lowercased and returned
- */
-function libraryNameSuggested() {
-  return path
-    .basename(path.resolve(__dirname, '..'))
-    .replace(/[^\w\d]|_/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .toLowerCase()
 }
 
 /**
