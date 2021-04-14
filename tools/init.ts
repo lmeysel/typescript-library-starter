@@ -10,8 +10,8 @@ import { readFileSync, writeFileSync } from 'fs'
 import { fork } from 'child_process'
 
 // Note: These should all be relative to the project root directory
-const rmDirs = ['.git']
-const rmFiles = ['.all-contributorsrc', '.gitattributes', 'tools/init.ts']
+const rmDirs = ['.git', 'tools/resources'];
+const rmFiles = ['.all-contributorsrc', '.gitattributes', 'tools/init.ts', '.github/workflows/typescript-library-starter.yml']
 const modifyFiles = [
   'LICENSE',
   'package.json',
@@ -22,6 +22,7 @@ const modifyFiles = [
 const renameFiles = [
   ['src/library.ts', 'src/--libraryname--.ts'],
   ['test/library.test.ts', 'test/--libraryname--.test.ts'],
+	['tools/resources/nodejs.yml', '.github/workflows/nodejs.yml'],
 ]
 
 const _promptSchemaLibraryName: Promise<{ library: string }> = prompt({
@@ -95,11 +96,12 @@ function setupLibrary(libraryName: string) {
   let username = exec('git config user.name').stdout.trim()
   let usermail = exec('git config user.email').stdout.trim()
 
-  removeItems()
 
   modifyContents(libraryName, username, usermail)
 
   renameItems(libraryName)
+
+	removeItems()
 
   finalize()
 
