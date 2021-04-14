@@ -1,11 +1,9 @@
 # TypeScript library starter
 
-[![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
-[![Greenkeeper badge](https://badges.greenkeeper.io/alexjoverm/typescript-library-starter.svg)](https://greenkeeper.io/)
-[![Travis](https://img.shields.io/travis/alexjoverm/typescript-library-starter.svg)](https://travis-ci.org/alexjoverm/typescript-library-starter)
-[![Coveralls](https://img.shields.io/coveralls/alexjoverm/typescript-library-starter.svg)](https://coveralls.io/github/alexjoverm/typescript-library-starter)
-[![Dev Dependencies](https://david-dm.org/alexjoverm/typescript-library-starter/dev-status.svg)](https://david-dm.org/alexjoverm/typescript-library-starter?type=dev)
-[![Donate](https://img.shields.io/badge/donate-paypal-blue.svg)](https://paypal.me/AJoverMorales)
+[![Linting](https://img.shields.io/badge/lint-eslint-4B32C3?style=flat-square&logo=eslint)](https://eslint.org/)
+![GitHub Actions](https://img.shields.io/github/workflow/status/lmeysel/typescript-library-starter/TypeScript%20library%20starter%20CI?style=flat-square&logo=github)
+[![Coveralls](https://img.shields.io/coveralls/lmeysel/typescript-library-starter.svg?style=flat-square&logo=coveralls)](https://coveralls.io/github/lmeysel/typescript-library-starter)
+[![Donate](https://img.shields.io/badge/donate-paypal-blue.svg?style=flat-square)](https://paypal.me/lmeysel)
 
 A starter project that makes creating a TypeScript library extremely easy.
 
@@ -14,7 +12,7 @@ A starter project that makes creating a TypeScript library extremely easy.
 ### Usage
 
 ```bash
-git clone https://github.com/LuisReinoso/typescript-library-starter.git YOURFOLDERNAME
+git clone https://github.com/lmeysel/typescript-library-starter.git YOURFOLDERNAME
 cd YOURFOLDERNAME
 
 # Run npm install and write your library name when asked. That's all!
@@ -28,7 +26,7 @@ npm install
  - Zero-setup. After running `npm install` things will setup for you :wink:
  - **[RollupJS](https://rollupjs.org/)** for multiple optimized bundles following the [standard convention](http://2ality.com/2017/04/setting-up-multi-platform-packages.html) and [Tree-shaking](https://alexjoverm.github.io/2017/03/06/Tree-shaking-with-Webpack-2-TypeScript-and-Babel/)
  - Tests, coverage and interactive watch mode using **[Jest](http://facebook.github.io/jest/)**
- - **[Prettier](https://github.com/prettier/prettier)** and **[ESLint](https://eslint.org/)** for code formatting and consistency
+ - **[ESLint](https://eslint.org/)** for code formatting and consistency
  - **Docs automatic generation and deployment** to `gh-pages`, using **[TypeDoc](http://typedoc.org/)**
  - Automatic types `(*.d.ts)` file generation
  - (Optional) **Automatic releases and changelog**, using [Semantic release](https://github.com/semantic-release/semantic-release), [Commitizen](https://github.com/commitizen/cz-cli), [Conventional changelog](https://github.com/conventional-changelog/conventional-changelog) and [Husky](https://github.com/typicode/husky) (for the git hooks)
@@ -67,7 +65,6 @@ Good news: the setup is here for you, you must only include the dependency name 
 
 _**Prerequisites**: you need to create/login accounts and add your project to:_
  - [npm](https://www.npmjs.com/)
- - [Travis CI](https://travis-ci.org)
  - [Coveralls](https://coveralls.io)
 
 _**Prerequisite for Windows**: Semantic-release uses
@@ -82,14 +79,11 @@ npm install --global --production windows-build-tools
 
 #### Setup steps
 
-Follow the console instructions to install semantic release and run it (answer NO to "Do you want a `.travis.yml` file with semantic-release setup?").
-
 _Note: make sure you've setup `repository.url` in your `package.json` file_
 
 ```bash
 npm install -g semantic-release-cli
 semantic-release-cli setup
-# IMPORTANT!! Answer NO to "Do you want a `.travis.yml` file with semantic-release setup?" question. It is already prepared for you :P
 ```
 
 From now on, you'll need to use `npm run commit`, which is a convenient way to create conventional commits.
@@ -102,7 +96,7 @@ There is already set a `precommit` hook for formatting your code with Prettier :
 
 By default, there are two disabled git hooks. They're set up when you run the `npm run semantic-release-prepare` script. They make sure:
  - You follow a [conventional commit message](https://github.com/conventional-changelog/conventional-changelog)
- - Your build is not going to fail in [Travis](https://travis-ci.org) (or your CI server), since it's runned locally before `git push`
+ - Your build is not going to fail in Github Actions (or your CI server), since it's runned locally before `git push`
 
 This makes more sense in combination with [automatic releases](#automatic-releases)
 
@@ -132,11 +126,10 @@ It runs the script `tools/init` which sets up everything for you. In short, it:
 
 Then you may want to:
  - Remove `commitmsg`, `postinstall` scripts from `package.json`. That will not use those git hooks to make sure you make a conventional commit
- - Remove `npm run semantic-release` from `.travis.yml`
 
 #### What if I don't want to use coveralls or report my coverage?
 
-Remove `npm run report-coverage` from `.travis.yml`
+Remove `Report coverage`-step from `.github/workflows/nodejs.yml`
 
 ## Resources
 
