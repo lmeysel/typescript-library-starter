@@ -4,7 +4,7 @@
 import { prompt } from 'enquirer'
 import { mv, rm, which, exec } from 'shelljs'
 import * as replace from 'replace-in-file'
-import * as colors from 'colors'
+import * as chalk from 'chalk'
 import * as path from 'path'
 import { readFileSync, writeFileSync } from 'fs'
 import { fork } from 'child_process'
@@ -35,12 +35,12 @@ const _suggestLibraryName = function () {
 process.stdout.write('\x1B[2J\x1B[0f')
 
 if (!which('git')) {
-  console.log(colors.red('Sorry, this script requires git'))
+  console.log(chalk.red('Sorry, this script requires git'))
   process.exit(1)
 }
 
 // Say hi!
-console.log(colors.cyan("Hi! You're almost ready to make the next great TypeScript library."))
+console.log(chalk.cyan("Hi! You're almost ready to make the next great TypeScript library."))
 
 // Generate the library name and start the tasks
 if (process.env.CI == null) {
@@ -65,7 +65,7 @@ async function libraryNameCreate() {
 		});
     setupLibrary(res.library)
   } catch (error) {
-    console.log(colors.red('Sorry, there was an error building the workspace :('))
+    console.log(chalk.red('Sorry, there was an error building the workspace :('))
     process.exit(1)
   }
 }
@@ -77,7 +77,7 @@ async function libraryNameCreate() {
  */
 function setupLibrary(libraryName: string) {
   console.log(
-    colors.cyan('\nThanks for the info. The last few changes are being made... hang tight!\n\n')
+    chalk.cyan('\nThanks for the info. The last few changes are being made... hang tight!\n\n')
   )
 
   // Get the Git username and email before the .git directory is removed
@@ -93,14 +93,14 @@ function setupLibrary(libraryName: string) {
 
   finalize()
 
-  console.log(colors.cyan("OK, you're all set. Happy coding!! ;)\n"))
+  console.log(chalk.cyan("OK, you're all set. Happy coding!! ;)\n"))
 }
 
 /**
  * Removes items from the project that aren't needed after the initial setup
  */
 function removeItems() {
-  console.log(colors.underline.white('Removed'))
+  console.log(chalk.underline.white('Removed'))
 
   // The directories and files are combined here, to simplify the function,
   // as the 'rm' command checks the item type before attempting to remove it
@@ -109,7 +109,7 @@ function removeItems() {
     '-rf',
     rmItems.map((f) => path.resolve(__dirname, '..', f))
   )
-  console.log(colors.red(rmItems.join('\n')))
+  console.log(chalk.red(rmItems.join('\n')))
 
   console.log('\n')
 }
@@ -122,7 +122,7 @@ function removeItems() {
  * @param usermail
  */
 function modifyContents(libraryName: string, username: string, usermail: string) {
-  console.log(colors.underline.white('Modified'))
+  console.log(chalk.underline.white('Modified'))
 
   let files = modifyFiles.map((f) => path.resolve(__dirname, '..', f))
   try {
@@ -131,7 +131,7 @@ function modifyContents(libraryName: string, username: string, usermail: string)
       from: [/--libraryname--/g, /--username--/g, /--usermail--/g],
       to: [libraryName, username, usermail],
     })
-    console.log(colors.yellow(modifyFiles.join('\n')))
+    console.log(chalk.yellow(modifyFiles.join('\n')))
   } catch (error) {
     console.error('An error occurred modifying the file: ', error)
   }
@@ -145,14 +145,14 @@ function modifyContents(libraryName: string, username: string, usermail: string)
  * @param libraryName
  */
 function renameItems(libraryName: string) {
-  console.log(colors.underline.white('Renamed'))
+  console.log(chalk.underline.white('Renamed'))
 
   renameFiles.forEach(function (files) {
     // Files[0] is the current filename
     // Files[1] is the new name
     let newFilename = files[1].replace(/--libraryname--/g, libraryName)
     mv(path.resolve(__dirname, '..', files[0]), path.resolve(__dirname, '..', newFilename))
-    console.log(colors.cyan(files[0] + ' => ' + newFilename))
+    console.log(chalk.cyan(files[0] + ' => ' + newFilename))
   })
 
   console.log('\n')
@@ -162,13 +162,13 @@ function renameItems(libraryName: string) {
  * Calls any external programs to finish setting up the library
  */
 function finalize() {
-  console.log(colors.underline.white('Finalizing'))
+  console.log(chalk.underline.white('Finalizing'))
 
   // Recreate Git folder
   let gitInitOutput = exec('git init "' + path.resolve(__dirname, '..') + '"', {
     silent: true,
   }).stdout
-  console.log(colors.green(gitInitOutput.replace(/(\n|\r)+/g, '')))
+  console.log(chalk.green(gitInitOutput.replace(/(\n|\r)+/g, '')))
 
   // Remove post-install command
   let jsonPackage = path.resolve(__dirname, '..', 'package.json')
@@ -178,11 +178,11 @@ function finalize() {
   delete pkg.scripts.postinstall
 
   writeFileSync(jsonPackage, JSON.stringify(pkg, null, 2))
-  console.log(colors.green('Postinstall script has been removed'))
+  console.log(chalk.green('Postinstall script has been removed'))
 
   // Initialize Husky
   fork(path.resolve(__dirname, '..', 'node_modules', 'husky', 'bin', 'install'), { silent: true })
-  console.log(colors.green('Git hooks set up'))
+  console.log(chalk.green('Git hooks set up'))
 
   console.log('\n')
 }
