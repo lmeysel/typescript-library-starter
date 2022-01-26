@@ -1,6 +1,6 @@
 # TypeScript library starter
 
-[![Linting](https://img.shields.io/badge/lint-eslint-4B32C3?style=flat-square&logo=eslint)](https://eslint.org/)
+[![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 ![GitHub Actions](https://img.shields.io/github/workflow/status/lmeysel/typescript-library-starter/TypeScript%20library%20starter%20CI?style=flat-square&logo=github)
 [![Coveralls](https://img.shields.io/coveralls/lmeysel/typescript-library-starter.svg?style=flat-square&logo=coveralls)](https://coveralls.io/github/lmeysel/typescript-library-starter)
 [![Donate](https://img.shields.io/badge/donate-paypal-blue.svg?style=flat-square)](https://paypal.me/lmeysel)
