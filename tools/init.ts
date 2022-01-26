@@ -86,8 +86,8 @@ function setupLibrary(libraryName: string) {
   );
 
   // Get the Git username and email before the .git directory is removed
-  let username = exec('git config user.name').stdout.trim();
-  let usermail = exec('git config user.email').stdout.trim();
+  const username = exec('git config user.name').stdout.trim();
+  const usermail = exec('git config user.email').stdout.trim();
 
   modifyContents(libraryName, username, usermail);
 
@@ -108,7 +108,7 @@ function removeItems() {
 
   // The directories and files are combined here, to simplify the function,
   // as the 'rm' command checks the item type before attempting to remove it
-  let rmItems = rmDirs.concat(rmFiles);
+  const rmItems = rmDirs.concat(rmFiles);
   rm(
     '-rf',
     rmItems.map((f) => path.resolve(__dirname, '..', f))
@@ -128,7 +128,7 @@ function removeItems() {
 function modifyContents(libraryName: string, username: string, usermail: string) {
   console.log(chalk.underline.white('Modified'));
 
-  let files = modifyFiles.map((f) => path.resolve(__dirname, '..', f));
+  const files = modifyFiles.map((f) => path.resolve(__dirname, '..', f));
   try {
     const changes = replace.sync({
       files,
@@ -154,7 +154,7 @@ function renameItems(libraryName: string) {
   renameFiles.forEach(function (files) {
     // Files[0] is the current filename
     // Files[1] is the new name
-    let newFilename = files[1].replace(/--libraryname--/g, libraryName);
+    const newFilename = files[1].replace(/--libraryname--/g, libraryName);
     mv(path.resolve(__dirname, '..', files[0]), path.resolve(__dirname, '..', newFilename));
     console.log(chalk.cyan(files[0] + ' => ' + newFilename));
   });
@@ -169,13 +169,13 @@ function finalize() {
   console.log(chalk.underline.white('Finalizing'));
 
   // Recreate Git folder
-  let gitInitOutput = exec('git init "' + path.resolve(__dirname, '..') + '"', {
+  const gitInitOutput = exec('git init "' + path.resolve(__dirname, '..') + '"', {
     silent: true,
   }).stdout;
   console.log(chalk.green(gitInitOutput.replace(/(\n|\r)+/g, '')));
 
   // Remove post-install command
-  let jsonPackage = path.resolve(__dirname, '..', 'package.json');
+  const jsonPackage = path.resolve(__dirname, '..', 'package.json');
   const pkg = JSON.parse(readFileSync(jsonPackage) as any);
 
   // Note: Add items to remove from the package file here
