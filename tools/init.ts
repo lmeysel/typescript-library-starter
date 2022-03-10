@@ -4,7 +4,7 @@
 import { prompt } from 'enquirer';
 import { mv, rm, which, exec } from 'shelljs';
 import * as replace from 'replace-in-file';
-import * as chalk from 'chalk';
+import chalk from 'chalk';
 import * as path from 'path';
 import { readFileSync, writeFileSync } from 'fs';
 import { fork } from 'child_process';
