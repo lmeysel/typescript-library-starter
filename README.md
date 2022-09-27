@@ -7,8 +7,6 @@
 
 A starter project that makes creating a TypeScript library extremely easy.
 
-![](https://i.imgur.com/opUmHp0.png)
-
 ### Usage
 
 ```bash
@@ -24,9 +22,9 @@ npm install
 ### Features
 
 - Zero-setup. After running `npm install` things will setup for you :wink:
-- **[RollupJS](https://rollupjs.org/)** for multiple optimized bundles following the [standard convention](http://2ality.com/2017/04/setting-up-multi-platform-packages.html) and [Tree-shaking](https://alexjoverm.github.io/2017/03/06/Tree-shaking-with-Webpack-2-TypeScript-and-Babel/)
-- Tests, coverage and interactive watch mode using **[Jest](http://facebook.github.io/jest/)**
-- **[ESLint](https://eslint.org/)** for code formatting and consistency
+- **[Vite](https://vitejs.dev/)** for fast and multiple optimized bundles.
+- Tests, coverage and interactive watch mode using **[Jest](https://vitest.dev/)**
+- **[ESLint](https://eslint.org/)** and **[Prettier](https://prettier.io/)** for code formatting and consistency
 - **Docs automatic generation and deployment** to `gh-pages`, using **[TypeDoc](http://typedoc.org/)**
 - Automatic types `(*.d.ts)` file generation
 - (Optional) **Automatic releases and changelog**, using [Semantic release](https://github.com/semantic-release/semantic-release), [Commitizen](https://github.com/commitizen/cz-cli), [Conventional changelog](https://github.com/conventional-changelog/conventional-changelog) and [Husky](https://github.com/typicode/husky) (for the git hooks)
@@ -48,48 +46,17 @@ import something from 'mylib/dist/lib/something';
 ### NPM scripts
 
 - `npm t`: Run test suite
-- `npm start`: Run `npm run build` in watch mode
-- `npm run test:watch`: Run test suite in [interactive watch mode](http://facebook.github.io/jest/docs/cli.html#watch)
+- `npm run test:watch`: Run test suite in [watch mode](https://vitest.dev/guide/features.html#watch-mode)
 - `npm run test:prod`: Run linting and generate coverage
 - `npm run build`: Generate bundles and typings, create docs
 - `npm run lint`: Lints code
-- `npm run commit`: Commit using conventional commit style ([husky](https://github.com/typicode/husky) will tell you to use it if you haven't :wink:)
+- `npm run commit`: Commit using conventional commit style ([commitlint](https://commitlint.js.org/) will tell you to use it if you haven't :wink:)
 
 ### Excluding peerDependencies
 
 On library development, one might want to set some peer dependencies, and thus remove those from the final bundle. You can see in [Rollup docs](https://rollupjs.org/#peer-dependencies) how to do that.
 
-Good news: the setup is here for you, you must only include the dependency name in `external` property within `rollup.config.js`. For example, if you want to exclude `lodash`, just write there `external: ['lodash']`.
-
-### Automatic releases
-
-_**Prerequisites**: you need to create/login accounts and add your project to:_
-
-- [npm](https://www.npmjs.com/)
-- [Coveralls](https://coveralls.io)
-
-_**Prerequisite for Windows**: Semantic-release uses
-**[node-gyp](https://github.com/nodejs/node-gyp)** so you will need to
-install
-[Microsoft's windows-build-tools](https://github.com/felixrieseberg/windows-build-tools)
-using this command:_
-
-```bash
-npm install --global --production windows-build-tools
-```
-
-#### Setup steps
-
-_Note: make sure you've setup `repository.url` in your `package.json` file_
-
-```bash
-npm install -g semantic-release-cli
-semantic-release-cli setup
-```
-
-From now on, you'll need to use `npm run commit`, which is a convenient way to create conventional commits.
-
-Automatic releases are possible thanks to [semantic release](https://github.com/semantic-release/semantic-release), which publishes your code automatically on [github](https://github.com/) and [npm](https://www.npmjs.com/), plus generates automatically a changelog. This setup is highly influenced by [Kent C. Dodds course on egghead.io](https://egghead.io/courses/how-to-write-an-open-source-javascript-library)
+Good news: the setup is here for you, you must only include the dependency name in `external` property within `vite.config.js`. For example, if you want to exclude `lodash`, just write there `external: ['lodash']` in the `rollupOptions`-section.
 
 ### Git Hooks
 
@@ -121,33 +88,20 @@ import "core-js/fn/promise"
 
 It runs the script `tools/init` which sets up everything for you. In short, it:
 
-- Configures RollupJS for the build, which creates the bundles
+- Configures Vite for the build, which creates the bundles
 - Configures `package.json` (typings file, main file, etc)
 - Renames main src and test files
 
-#### What if I don't want git-hooks, automatic releases or semantic-release?
+#### What if I don't want git-hooks?
 
-Then you may want to:
+Then you may want let lefthook uninstall the hooks and uninstall lefthook itself:
 
-- Remove `commitmsg`, `postinstall` scripts from `package.json`. That will not use those git hooks to make sure you make a conventional commit
+`pnpx lefthook uninstall && pnpm remove lefthook`
+
 
 #### What if I don't want to use coveralls or report my coverage?
 
 Remove `Report coverage`-step from `.github/workflows/nodejs.yml`
-
-## Resources
-
-- [Write a library using TypeScript library starter](https://dev.to/alexjoverm/write-a-library-using-typescript-library-starter) by [@alexjoverm](https://github.com/alexjoverm/)
-- [📺 Create a TypeScript Library using typescript-library-starter](https://egghead.io/lessons/typescript-create-a-typescript-library-using-typescript-library-starter) by [@alexjoverm](https://github.com/alexjoverm/)
-- [Introducing TypeScript Library Starter Lite](https://blog.tonysneed.com/2017/09/15/introducing-typescript-library-starter-lite/) by [@tonysneed](https://github.com/tonysneed)
-
-## Projects using `typescript-library-starter`
-
-Here are some projects that use `typescript-library-starter`:
-
-- [NOEL - A universal, human-centric, replayable event emitter](https://github.com/lifenautjoe/noel)
-- [droppable - A library to give file dropping super-powers to any HTML element.](https://github.com/lifenautjoe/droppable)
-- [redis-messaging-manager - Pubsub messaging library, using redis and rxjs](https://github.com/tomyitav/redis-messaging-manager)
 
 ## Credits
 

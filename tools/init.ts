@@ -4,29 +4,17 @@
 import { prompt } from 'enquirer';
 import { mv, rm, which, exec } from 'shelljs';
 import * as replace from 'replace-in-file';
-import chalk from 'chalk';
+import * as kleur from 'kleur';
 import * as path from 'path';
 import { readFileSync, writeFileSync } from 'fs';
 import { fork } from 'child_process';
 
 // Note: These should all be relative to the project root directory
-const rmDirs = ['.git', 'tools/resources'];
-const rmFiles = [
-  '.all-contributorsrc',
-  '.gitattributes',
-  'tools/init.ts',
-  '.github/workflows/typescript-library-starter.yml',
-];
-const modifyFiles = [
-  'LICENSE',
-  'package.json',
-  'rollup.config.ts',
-  'test/library.test.ts',
-  'tools/gh-pages-publish.ts',
-];
+const rmDirs = ['.git', 'tools/resources', 'tools'];
+const rmFiles = ['.all-contributorsrc', '.gitattributes', '.github/workflows/typescript-library-starter.yml'];
+const modifyFiles = ['LICENSE', 'package.json', 'vite.config.ts', 'test/dummy.test.ts', 'tools/gh-pages-publish.ts'];
 const renameFiles = [
   ['src/library.ts', 'src/--libraryname--.ts'],
-  ['test/library.test.ts', 'test/--libraryname--.test.ts'],
   ['tools/resources/nodejs.yml', '.github/workflows/nodejs.yml'],
 ];
 
@@ -40,12 +28,12 @@ const _suggestLibraryName = function () {
 process.stdout.write('\x1B[2J\x1B[0f');
 
 if (!which('git')) {
-  console.log(chalk.red('Sorry, this script requires git'));
+  console.log(kleur.red('Sorry, this script requires git'));
   process.exit(1);
 }
 
 // Say hi!
-console.log(chalk.cyan("Hi! You're almost ready to make the next great TypeScript library."));
+console.log(kleur.cyan("Hi! You're almost ready to make the next great TypeScript library."));
 
 // Generate the library name and start the tasks
 if (process.env.CI == null) {
@@ -70,7 +58,7 @@ async function libraryNameCreate() {
     });
     setupLibrary(res.library);
   } catch (error) {
-    console.log(chalk.red('Sorry, there was an error building the workspace :('));
+    console.log(kleur.red('Sorry, there was an error building the workspace :('));
     process.exit(1);
   }
 }
@@ -81,9 +69,7 @@ async function libraryNameCreate() {
  * @param libraryName
  */
 function setupLibrary(libraryName: string) {
-  console.log(
-    chalk.cyan('\nThanks for the info. The last few changes are being made... hang tight!\n\n')
-  );
+  console.log(kleur.cyan('\nThanks for the info. The last few changes are being made... hang tight!\n\n'));
 
   // Get the Git username and email before the .git directory is removed
   const username = exec('git config user.name').stdout.trim();
@@ -97,14 +83,14 @@ function setupLibrary(libraryName: string) {
 
   finalize();
 
-  console.log(chalk.cyan("OK, you're all set. Happy coding!! ;)\n"));
+  console.log(kleur.cyan("OK, you're all set. Happy coding!! ;)\n"));
 }
 
 /**
  * Removes items from the project that aren't needed after the initial setup
  */
 function removeItems() {
-  console.log(chalk.underline.white('Removed'));
+  console.log(kleur.white('Removed'));
 
   // The directories and files are combined here, to simplify the function,
   // as the 'rm' command checks the item type before attempting to remove it
@@ -113,7 +99,7 @@ function removeItems() {
     '-rf',
     rmItems.map((f) => path.resolve(__dirname, '..', f))
   );
-  console.log(chalk.red(rmItems.join('\n')));
+  console.log(kleur.red(rmItems.join('\n')));
 
   console.log('\n');
 }
@@ -126,16 +112,16 @@ function removeItems() {
  * @param usermail
  */
 function modifyContents(libraryName: string, username: string, usermail: string) {
-  console.log(chalk.underline.white('Modified'));
+  console.log(kleur.white('Modified'));
 
   const files = modifyFiles.map((f) => path.resolve(__dirname, '..', f));
   try {
-    const changes = replace.sync({
+    replace.sync({
       files,
       from: [/--libraryname--/g, /--username--/g, /--usermail--/g],
       to: [libraryName, username, usermail],
     });
-    console.log(chalk.yellow(modifyFiles.join('\n')));
+    console.log(kleur.yellow(modifyFiles.join('\n')));
   } catch (error) {
     console.error('An error occurred modifying the file: ', error);
   }
@@ -149,14 +135,14 @@ function modifyContents(libraryName: string, username: string, usermail: string)
  * @param libraryName
  */
 function renameItems(libraryName: string) {
-  console.log(chalk.underline.white('Renamed'));
+  console.log(kleur.white('Renamed'));
 
   renameFiles.forEach(function (files) {
     // Files[0] is the current filename
     // Files[1] is the new name
     const newFilename = files[1].replace(/--libraryname--/g, libraryName);
     mv(path.resolve(__dirname, '..', files[0]), path.resolve(__dirname, '..', newFilename));
-    console.log(chalk.cyan(files[0] + ' => ' + newFilename));
+    console.log(kleur.cyan(files[0] + ' => ' + newFilename));
   });
 
   console.log('\n');
@@ -166,13 +152,13 @@ function renameItems(libraryName: string) {
  * Calls any external programs to finish setting up the library
  */
 function finalize() {
-  console.log(chalk.underline.white('Finalizing'));
+  console.log(kleur.white('Finalizing'));
 
   // Recreate Git folder
   const gitInitOutput = exec('git init "' + path.resolve(__dirname, '..') + '"', {
     silent: true,
   }).stdout;
-  console.log(chalk.green(gitInitOutput.replace(/(\n|\r)+/g, '')));
+  console.log(kleur.green(gitInitOutput.replace(/(\n|\r)+/g, '')));
 
   // Remove post-install command
   const jsonPackage = path.resolve(__dirname, '..', 'package.json');
@@ -181,12 +167,16 @@ function finalize() {
   // Note: Add items to remove from the package file here
   delete pkg.scripts.postinstall;
 
+  console.log(kleur.green('Setting up git hooks'));
+  exec('pnpx lefthook install');
+  pkg.scripts.postinstall = 'lefthook install';
   writeFileSync(jsonPackage, JSON.stringify(pkg, null, 2));
-  console.log(chalk.green('Postinstall script has been removed'));
+
+  console.log(kleur.green('Postinstall script has been removed'));
 
   // Initialize Husky
   fork(path.resolve(__dirname, '..', 'node_modules', 'husky', 'bin', 'install'), { silent: true });
-  console.log(chalk.green('Git hooks set up'));
+  console.log(kleur.green('Git hooks set up'));
 
   console.log('\n');
 }

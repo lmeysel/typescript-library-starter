@@ -1,4 +1,4 @@
-import DummyClass from '../src/--libraryname--';
+import { Dummy } from '../src/--libraryname--';
 
 /**
  * Dummy test
@@ -9,6 +9,6 @@ describe('Dummy test', () => {
   });
 
   it('DummyClass is instantiable', () => {
-    expect(new DummyClass()).toBeInstanceOf(DummyClass);
+    expect(new Dummy()).toBeInstanceOf(Dummy);
   });
 });

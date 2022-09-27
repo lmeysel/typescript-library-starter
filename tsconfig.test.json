@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "moduleResolution": "node",
+    "lib": ["ESNext", "DOM"],
+    "types": ["vitest/globals"]
+  },
+  "include": ["test"],
+  "references": [{ "path": "tsconfig.lib.json" }]
+}
